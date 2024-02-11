@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .header {
+            text-align: center;
+            font-size: 32px;
+            font-style: italic;
+            background-color: #32CD32;
+            padding: 20px 0;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .contact-info {
+            margin-top: 20px;
+            height: 100px;
+            background-color: #32CD32;
+            text-align: center;
+            color: white;
+            font-size: 32px;
+            padding: 40px;
+        }
+
+        .contact-form {
+            margin-top: 20px;
+            margin-left: 150px;
+            width: 400px;
+            float: left;
+        }
+
+        label {
+            font-size: 18px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            background-color: #32CD32;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #228B22;
+        }
+
+        .sidebar {
+            float: left;
+            width: 300px;
+            text-align: center;
+            padding: 20px;
+            margin-top: 15px;
+            margin-left: 300px;
+        }
+
+        .content {
+            padding: 0 20px;
+            overflow: hidden;
+            margin:50px;
+            
+        }
+
+        .form {
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        BikeMileagePro
+    </div>
+    <div class="contact-info">
+        How can we help?<br>
+        Send us a message!
+    </div>
+    <div class="content">
+        <div class="contact-form">
+            <form id="Contactform" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                <label for="fname">First Name</label><br>
+                <input type="text" id="fname" name="fname" required><br>
+
+                <label for="lname">Last Name</label><br>
+                <input type="text" id="lname" name="lname" required><br>
+
+                <label for="email">Email <span id="policy">(privacy policy)</span></label><br>
+                <input type="email" id="email" name="email" required><br>
+
+                <label for="message">Message</label><br>
+                <textarea id="message" name="message" required></textarea><br>
+
+                <button type="submit" id="bt" name="bt">Send Message</button>
+            </form>
+        </div>
+        <div class="sidebar">
+            <img src="bike.jpg" alt="Bike Image">
+        </div>
+    </div>
+</body>
+</html>
+
+<?php
+// Database connection parameters
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "bikemileagrpro";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+
+// Process form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $Firstname = $_POST['fname'];
+    $Lastname = $_POST['lname'];
+    $Email = $_POST['email'];
+    $Message = $_POST['message'];
+    $sql = "INSERT INTO query (Firstname, Lastname,Email,Message) 
+            VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssss", $Firstname, $Lastname,$Email,$Message);
+    
+    // Execute the query
+    if ($stmt->execute()) {
+        // Redirect after successful insertion
+        header("Location: query.php");
+        exit(); // Ensure no further code execution after redirection
+    } else {
+        // Handle insertion failure
+        echo "<script>alert('Error: " . $conn->error . "');</script>";
+    }
+
+    // Close the prepared statement
+    $stmt->close();
+}

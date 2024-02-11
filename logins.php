@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Authentication</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            text-align: center;
+            font-size: 32px;
+            font-style: italic;
+            background-color: #32CD32;
+            padding: 20px 0;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 50px auto; /* Center the container */
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #32CD32;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #228B22;
+        }
+
+        .signup {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        BikeMileagePro
+    </div>
+
+    <div class="container">
+        <form id="LoginForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" >
+            <h2>Login</h2>
+            <label for="loginUsername">Username:</label>
+            <input type="text" id="loginUsername" name="loginUsername" required>
+            <label for="loginPassword">Password:</label>
+            <input type="password" id="loginPassword" name="loginPassword" required>
+            <input type="submit" value="Login">
+        </form>
+        <div class="signup">
+            <p>Don't have an account? <a href="signup.php">Sign up here</a>.</p>
+        </div>
+    </div>
+</body>
+</html>
+
+<?php
+// Database connection parameters
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "bikemileagrpro";
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Check if the login form was submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Retrieve username and password from the login form
+    $Username = $_POST['loginUsername'];
+    $Password = $_POST['loginPassword'];
+
+    // SQL query to retrieve user data based on username and password
+    $sql = "SELECT * FROM usertable WHERE Username = '$Username' AND Password = '$Password'";
+    $result = $conn->query($sql);
+
+    // Check if a matching user was found
+    if ($result->num_rows > 0) {
+        // User exists, grant access
+        echo "<script>alert('Login Successful');</script>";
+         header("Location: submission.php");
+    } else {
+        // No matching user found, display error message
+        echo "Invalid username or password.";
+    }
+}
+
+// Close connection
+$conn->close();
+?>
