@@ -83,7 +83,7 @@
             <input type="submit" value="Login">
         </form>
         <div class="signup">
-            <p>Don't have an account? <a href="signup.php">Sign up here</a>.</p>
+            <p>Don't have an account? <a href="signup.html">Sign up here</a>.</p>
         </div>
     </div>
 </body>
@@ -117,7 +117,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows > 0) {
         // User exists, grant access
         echo "<script>alert('Login Successful');</script>";
-         header("Location: submission.php");
+         header("Location: submission.html");
     } else {
         // No matching user found, display error message
         echo "Invalid username or password.";
